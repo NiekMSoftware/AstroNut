@@ -27,12 +27,7 @@ namespace AstroNut.Characters.Player
         {
             SubscribeToInputEvents(true);
         }
-
-        private void OnDisable()
-        {
-            SubscribeToInputEvents(false);
-        }
-
+        
         #region Handle Movement
 
         public void OnInputRotated()
@@ -82,7 +77,7 @@ namespace AstroNut.Characters.Player
         private void SubscribeToInputEvents(bool subscribe)
         {
             // If no input manager is found return.
-            if (InputManager.Instance == null) return;
+            if (InputManager.Instance == null || InputManager.Instance.Equals(null)) return;
 
             // subscribe and unsubscribe
             if (subscribe)
@@ -91,7 +86,7 @@ namespace AstroNut.Characters.Player
                 InputManager.Instance.ThrustEventStart += HandleThrust;
                 InputManager.Instance.ThrustEventStop += HandleThrustStop;
             }
-            else
+            else // Save to leave this as is, in case it will ever be needed.
             {
                 InputManager.Instance.RotateEvent -= HandleRotation;
                 InputManager.Instance.ThrustEventStart -= HandleThrust;

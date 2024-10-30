@@ -37,11 +37,6 @@ namespace AstroNut.Characters.Player
 
         private void OnDisable()
         {
-            // Unsubscribe to events
-            if (InputManager.Instance == null) return;
-            InputManager.Instance.ThrustEventStart -= HandleThrustEventStart;
-            InputManager.Instance.ThrustEventStop -= HandleThrustEventStop;
-
             // Stop routine
             if (fuelDepletionCoroutine == null) return;
             StopCoroutine(fuelDepletionCoroutine);

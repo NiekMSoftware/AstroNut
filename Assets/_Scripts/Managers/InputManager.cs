@@ -1,6 +1,6 @@
 using System;
 
-using AstroNut.InputActions;
+using AstroNut.Input;
 
 namespace AstroNut.Managers
 {
@@ -43,7 +43,32 @@ namespace AstroNut.Managers
 
         private void OnDisable()
         {
-            _playerInputActions.Disable();
+            Cleanup();
+        }
+
+        private void OnApplicationQuit()
+        {
+            Cleanup();
+        }
+
+        protected override void OnDestroy()
+        {
+            Cleanup();
+            base.OnDestroy();
+        }
+
+        private void Cleanup()
+        {
+            if (_playerInputActions != null)
+            {
+                _playerInputActions.Disable();
+                _playerInputActions.Dispose();
+                _playerInputActions = null;
+            }
+            
+            RotateEvent = null;
+            ThrustEventStart = null;
+            ThrustEventStop = null;
         }
 
         #region Event Handling
