@@ -9,6 +9,7 @@ namespace AstroNut.Managers
     public class FuelManager : MonoBehaviour
     {
         [SerializeField] private JetpackSO data;
+        private Jetpack _jetpack;
 
         // Reference to the player controller
         private PlayerController playerController;
@@ -19,28 +20,36 @@ namespace AstroNut.Managers
         private void Awake()
         {
             playerController = FindFirstObjectByType<PlayerController>();
+            
+            // Initialize Jetpack data
+            _jetpack = data.jetpack;
+            _jetpack.fuelLevel = data.jetpack.maxFuel;
         }
 
         private void OnEnable()
         {
+            // Subscribe to events
+            if (InputManager.Instance == null) return;
             InputManager.Instance.ThrustEventStart += HandleThrustEventStart;
             InputManager.Instance.ThrustEventStop += HandleThrustEventStop;
         }
 
         private void OnDisable()
         {
+            // Unsubscribe to events
+            if (InputManager.Instance == null) return;
             InputManager.Instance.ThrustEventStart -= HandleThrustEventStart;
             InputManager.Instance.ThrustEventStop -= HandleThrustEventStop;
-        }
 
-        private void OnDestroy()
-        {
-            InputManager.Instance.ThrustEventStart -= HandleThrustEventStart;
-            InputManager.Instance.ThrustEventStop -= HandleThrustEventStop;
+            // Stop routine
+            if (fuelDepletionCoroutine == null) return;
+            StopCoroutine(fuelDepletionCoroutine);
+            fuelDepletionCoroutine = null;
         }
 
         private void HandleThrustEventStart(float thrustInput)
         {
+            // Update the current thrust input
             _currentThrustInput = thrustInput;
             fuelDepletionCoroutine ??= StartCoroutine(DepleteFuel(thrustInput));
         }
@@ -53,6 +62,7 @@ namespace AstroNut.Managers
             // return if no routine is running
             if (fuelDepletionCoroutine == null) return;
             
+            // Stop the routine if it's still runnning.
             StopCoroutine(fuelDepletionCoroutine);
             fuelDepletionCoroutine = null;
         }
@@ -66,29 +76,24 @@ namespace AstroNut.Managers
                 // Break if no input is given.
                 if (_currentThrustInput == 0f) yield break;
                 
-                // Break already if fuel is 0.
-                if (data.jetpack.fuelLevel <= 0)
+                // Only consider the case for new fuel consumption
+                if (_jetpack.fuelLevel <= _jetpack.minFuel)
                 {
                     OnFuelDepleted();
+                    Profiler.EndSample();
                     yield break;
                 }
-
-                // Deref jetpack from data
-                Jetpack jetpack = data.jetpack;
                 
-                // Deplete fuel
-                jetpack.fuelLevel -= jetpack.fuelConsumptionFactor * thrustInput * Time.deltaTime;
+                // Deplete fuel directly
+                _jetpack.fuelLevel -= _jetpack.fuelConsumptionFactor * thrustInput * Time.deltaTime;
                 
-                // Make sure jetpack fuel stays at 0.
-                if (jetpack.fuelLevel <= 0)
+                // Ensure jetpack fuels stays at 0 and handle depletion.
+                if (_jetpack.fuelLevel <= data.jetpack.minFuel)
                 {
-                    jetpack.fuelLevel = 0;
+                    _jetpack.fuelLevel = 0;
                     OnFuelDepleted();
                 }
                 
-                // Assign data
-                data.jetpack = jetpack;
-
                 Profiler.EndSample();
                 yield return null;
             }
