@@ -1,10 +1,11 @@
-using System.Collections;
-using UnityEngine;
+using AstroNut.Managers;
 
-using AstroNut.Characters.Player;
+using System.Collections;
+
+using UnityEngine;
 using UnityEngine.Profiling;
 
-namespace AstroNut.Managers
+namespace AstroNut.Characters.Player
 {
     public class FuelManager : MonoBehaviour
     {

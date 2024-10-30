@@ -6,19 +6,8 @@ using AstroNut.InputActions;
 
 namespace AstroNut.Managers
 {
-    public class InputManager : MonoBehaviour
+    public class InputManager : Singleton<InputManager>
     {
-        private static InputManager _instance;
-
-        public static InputManager Instance
-        {
-            get
-            {
-                // If no instance exists, find one.
-                if (_instance == null) _instance = FindFirstObjectByType<InputManager>();
-                return _instance;
-            }
-        }
 
         // Player Input Actions
         private PlayerInputActions _playerInputActions;
@@ -31,10 +20,9 @@ namespace AstroNut.Managers
         public event Action<float> ThrustEventStart;
         public event Action ThrustEventStop;
         
-        private void Awake()
+        protected override void Awake()
         {
-            // If still no instance exists, initialize it
-            if (_instance == null) _instance = this;
+            base.Awake();
             
             // Initialize input actions
             _playerInputActions = new PlayerInputActions();
@@ -50,11 +38,16 @@ namespace AstroNut.Managers
 
         private void OnEnable()
         {
+            // guard clause for null check
+            if (!Instance) return;
             _playerInputActions.Enable();
         }
 
         private void OnDisable()
         {
+            // guard clause for null check
+            if (!Instance) return;
+            
             _playerInputActions.Disable();
         }
 

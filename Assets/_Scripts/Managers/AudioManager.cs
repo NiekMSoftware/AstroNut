@@ -20,20 +20,8 @@ namespace AstroNut.Managers
     /// <summary>
     /// Manages and pools all audio related game objects.
     /// </summary>
-    public class AudioManager : MonoBehaviour
+    public class AudioManager : Singleton<AudioManager>
     {
-        private static AudioManager _instance;
-        public static AudioManager Instance
-        {
-            get
-            {
-                // Find the first instance of the AudioManager within the scene if no instance is found.
-                if (_instance == null) FindFirstObjectByType<AudioManager>();
-                
-                return _instance;
-            }
-        }
-
         [Header("Audio Settings")] 
         [Tooltip("Please insert the Audio Scriptable Objects in here that you need.")] public AudioSO[] audios;
         [SerializeField] private AudioMixerGroup masterAudioMixerGroup;
@@ -42,11 +30,9 @@ namespace AstroNut.Managers
         
         private readonly Dictionary<SoundName, AudioSource> _audioDictionary = new();
 
-        private void Awake()
+        protected override void Awake()
         {
-            // Initialize instance
-            if (_instance == null)
-                _instance = this;
+            base.Awake();
             
             // Initialize and pool all sounds
             foreach (AudioSO sound in audios)
