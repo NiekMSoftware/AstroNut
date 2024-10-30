@@ -24,6 +24,7 @@ namespace AstroNut.Managers
         public void StartGame()
         {
             CurrentGameState = GameState.InGame;
+            CurrentPauseState = PauseState.Unpaused;
             SceneManager.LoadScene("Main Level");
         }
 
