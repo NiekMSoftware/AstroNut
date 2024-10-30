@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 using AstroNut.Managers;
@@ -7,85 +6,91 @@ namespace AstroNut.Characters.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        public float rotationFactor;
-        
-        [Space]
-        public float thrustFactor;
-        [Range(15f, 30f)] public float thrustValue;
+        [SerializeField] private Jetpack jetpack;
         
         // Input values
-        private float _currentRotationInput;
-        private float _currentThrustValue;
-        
-        // Components of player
-        private Rigidbody2D _rigidbody;
-
-        private void Start()
-        {
-            _rigidbody = GetComponent<Rigidbody2D>();
-        }
+        private float _rotationInput;
+        private float _thrustInput;
 
         private void OnEnable()
         {
-            // Subscribe to Rotation event
-            if (InputManager.Instance == null) return;
-            
-            InputManager.Instance.RotateEvent += HandleRotation;
-            InputManager.Instance.ThrustEvent += HandleThrust;
+            SubscribeToInputEvents(true);
         }
 
         private void OnDisable()
         {
-            // Unsubscribe from Rotation event
-            if (InputManager.Instance == null) return;
-            
-            InputManager.Instance.RotateEvent -= HandleRotation;
-            InputManager.Instance.ThrustEvent -= HandleThrust;
+            SubscribeToInputEvents(false);
         }
 
-        private void Update()
+        #region Handle Movement
+
+        public void OnInputRotated()
         {
             Rotate();
+        }
+
+        public void OnInputThrust(Rigidbody2D body)
+        {
+            Thrust(body);
         }
 
         private void Rotate()
         {
             // Continuously apply rotation based on the latest input
-            if (_currentRotationInput == 0f) return;
+            if (_rotationInput == 0f) return;
             
             // Heh heh, spin player :)
-            float rotationForce = 90 * rotationFactor;
-            float rotationAngle = _currentRotationInput * rotationForce;
+            float rotationForce = jetpack.rotationSpeed * jetpack.rotationFactor;
+            float rotationAngle = _rotationInput * rotationForce;
             transform.Rotate(Vector3.forward, rotationAngle * Time.deltaTime);
         }
 
-        private void FixedUpdate()
-        {
-            Thrust();
-        }
-
-        private void Thrust()
+        private void Thrust(Rigidbody2D body)
         {
             // Continuously apply force to the player
-            if (_currentThrustValue == 0f) return;
+            if (_thrustInput == 0f) return;
             
             // Calculate the force to apply based on thrust factor and current thrust value
-            float force = thrustFactor * thrustValue;
+            float force = jetpack.thrustFactor * jetpack.thrustLevel;
             
             // Apply the force in the player's local up direction
-            _rigidbody.AddForce(transform.up * force, ForceMode2D.Force);
+            body.AddForce(transform.up * force, ForceMode2D.Force);
+        }
+
+        #endregion
+
+        #region Event Handling
+
+        private void SubscribeToInputEvents(bool subscribe)
+        {
+            // If no input manager is found return.
+            if (InputManager.Instance == null) return;
+
+            // subscribe and unsubscribe
+            if (subscribe)
+            {
+                InputManager.Instance.RotateEvent += HandleRotation;
+                InputManager.Instance.ThrustEvent += HandleThrust;
+            }
+            else
+            {
+                InputManager.Instance.RotateEvent -= HandleRotation;
+                InputManager.Instance.ThrustEvent -= HandleThrust;
+            }
         }
 
         private void HandleRotation(float value)
         {
             // Update the current rotation input to be used in the Update loop.
-            _currentRotationInput = value;
+            _rotationInput = value;
         }
 
         private void HandleThrust(float value)
         {
             // Update the current thrust value
-            _currentThrustValue = value;
+            _thrustInput = value;
         }
+
+        #endregion
     }
 }
