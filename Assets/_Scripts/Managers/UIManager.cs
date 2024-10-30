@@ -9,10 +9,16 @@ namespace AstroNut.Managers
     #region UI Structures
 
     [System.Serializable]
+    public struct UILabel
+    {
+        public TMP_Text label;
+    }
+    
+    [System.Serializable]
     public struct UIButton
     {
         public Button button;
-        public TMP_Text text;
+        [FormerlySerializedAs("text")] public TMP_Text label;
     }
 
     [System.Serializable]
@@ -39,5 +45,65 @@ namespace AstroNut.Managers
     {
         [Header("Main Menu UI Elements")]
         [SerializeField] private UIPanel mainMenuPanel;
+        [SerializeField] private UILabel gameVersion;
+
+        private void Start()
+        {
+            SetupMainMenu();
+        }
+        
+        private void SetupMainMenu()
+        {
+            if (mainMenuPanel.panel != null)
+            {
+                mainMenuPanel.panel.SetActive(true);
+                
+                // Set necessary text
+                mainMenuPanel.header.text = "AstroNut";
+                gameVersion.label.text = Application.version;
+                
+                // Take out the buttons (e.g. Start, Options & Quit) and apply appropriate events.
+                if (mainMenuPanel.buttons.Length > 0)
+                {
+                    foreach (UIButton uiButton in mainMenuPanel.buttons)
+                    {
+                        switch (uiButton.label.text)
+                        {
+                            case "Play":
+                                uiButton.button.onClick.AddListener(OnPlayButtonClicked);
+                                break;
+                            
+                            case "Options":
+                                uiButton.button.onClick.AddListener(OnOptionsButtonClicked);
+                                break;
+                            
+                            case "Quit":
+                                uiButton.button.onClick.AddListener(OnQuitButtonClicked);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        #region Main Menu Button Setup
+        
+        private void OnPlayButtonClicked()
+        {
+            mainMenuPanel.panel.SetActive(false);
+            GameManager.Instance.StartGame();
+        }
+
+        private void OnOptionsButtonClicked()
+        {
+            Debug.Log("OnOptionsButtonClicked");
+        }
+
+        private void OnQuitButtonClicked()
+        {
+            GameManager.Instance.QuitApplication();
+        }
+        
+        #endregion
     }
 }
