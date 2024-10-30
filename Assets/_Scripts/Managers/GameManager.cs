@@ -44,10 +44,10 @@ namespace AstroNut.Managers
             CurrentPauseState = CurrentPauseState == PauseState.Paused ? PauseState.Unpaused : PauseState.Paused;
         }
 
-        private IEnumerator LoadSceneAsync(string sceneName)
+        private static IEnumerator LoadSceneAsync(string sceneName)
         {
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-            while (asyncLoad != null && !asyncLoad.isDone)
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+            while (asyncLoad is { isDone: false })
             {
                 yield return null;
             }
