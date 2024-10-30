@@ -16,6 +16,8 @@ namespace AstroNut.Characters.Player
         {
             _rigidbody = GetComponent<Rigidbody2D>();
             _playerController = GetComponent<PlayerController>();
+            
+            _playerController.Initialize(_rigidbody);
         }
 
         private void Update()
@@ -25,7 +27,7 @@ namespace AstroNut.Characters.Player
 
         private void FixedUpdate()
         {
-            _playerController.OnInputThrust(_rigidbody);
+            _playerController.OnInputThrust();
         }
     }
 }

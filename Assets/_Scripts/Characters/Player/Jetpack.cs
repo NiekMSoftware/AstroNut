@@ -11,7 +11,7 @@ namespace AstroNut.Characters.Player
         [field: SerializeField] public float maxFuel { get; set; }
         
         [field: Header("Jetpack Fuel Consumption")]
-        [field: SerializeField] public float fuelConsumption { get; set; }
+        [field: SerializeField] public float fuelConsumptionFactor { get; set; }
         
         [field: Space]
         [field: SerializeField] public float minFuelConsumption { get; set; }
@@ -19,9 +19,9 @@ namespace AstroNut.Characters.Player
         
         [field: Header("Jetpack Thrust Properties")]
         [field: SerializeField] public float thrustLevel { get; set; }
-        [field: Space, SerializeField] public float thrustFactor { get; set; }
+        [field: SerializeField] public float thrustFactor { get; set; }
         
-        [Header("Jetpack Rotation Properties")]
+        [field: Header("Jetpack Rotation Properties")]
         [field: SerializeField] public float rotationFactor { get; set; }
         [field: SerializeField] public float rotationSpeed { get; set; }
     }

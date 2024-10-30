@@ -6,11 +6,22 @@ namespace AstroNut.Characters.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private Jetpack jetpack;
+        [SerializeField] private JetpackSO jetpack;
+        
+        // Needed components
+        private Rigidbody2D _rigidbody;
         
         // Input values
         private float _rotationInput;
         private float _thrustInput;
+        
+        // Thrust variables
+        private bool _canThrust = true;
+
+        public void Initialize(Rigidbody2D body)
+        {
+            _rigidbody = body;
+        }
 
         private void OnEnable()
         {
@@ -29,18 +40,18 @@ namespace AstroNut.Characters.Player
             Rotate();
         }
 
-        public void OnInputThrust(Rigidbody2D body)
+        public void OnInputThrust()
         {
-            Thrust(body);
+            Thrust(_rigidbody);
         }
 
         private void Rotate()
         {
             // Continuously apply rotation based on the latest input
-            if (_rotationInput == 0f) return;
+            if (_rotationInput == 0f || !_canThrust) return;  // return if no input or can't thrust
             
             // Heh heh, spin player :)
-            float rotationForce = jetpack.rotationSpeed * jetpack.rotationFactor;
+            float rotationForce = jetpack.jetpack.rotationSpeed * jetpack.jetpack.rotationFactor;
             float rotationAngle = _rotationInput * rotationForce;
             transform.Rotate(Vector3.forward, rotationAngle * Time.deltaTime);
         }
@@ -51,7 +62,7 @@ namespace AstroNut.Characters.Player
             if (_thrustInput == 0f) return;
             
             // Calculate the force to apply based on thrust factor and current thrust value
-            float force = jetpack.thrustFactor * jetpack.thrustLevel;
+            float force = jetpack.jetpack.thrustFactor * jetpack.jetpack.thrustLevel;
             
             // Apply the force in the player's local up direction
             body.AddForce(transform.up * force, ForceMode2D.Force);
@@ -92,5 +103,15 @@ namespace AstroNut.Characters.Player
         }
 
         #endregion
+
+        public void EnableThrust()
+        {
+            _canThrust = true;
+        }
+        
+        public void DisableThrust()
+        {
+            _canThrust = false;
+        }
     }
 }
