@@ -6,7 +6,7 @@ namespace AstroNut.Managers
     {
         private static T _instance;
         private static readonly object _lock = new object();
-        private static bool _isShuttingDown = false;
+        private static bool _isShuttingDown;
 
         public static T Instance
         {
@@ -20,22 +20,21 @@ namespace AstroNut.Managers
                 
                 lock (_lock)
                 {
-                    if (_instance == null)
-                    {
-                        _instance = FindFirstObjectByType<T>();
+                    if (_instance != null) return _instance;
+                    
+                    _instance = FindFirstObjectByType<T>();
 
-                        if (_instance != null) return _instance;
+                    if (_instance != null) return _instance;
                         
-                        var singletonGameObject = new GameObject();
-                        _instance = singletonGameObject.AddComponent<T>();
-                        singletonGameObject.name = typeof(T).ToString() + " (Singleton)";
-                        DontDestroyOnLoad(singletonGameObject);
-                    }
+                    var singletonGameObject = new GameObject();
+                    _instance = singletonGameObject.AddComponent<T>();
+                    singletonGameObject.name = typeof(T).ToString() + " (Singleton)";
+                    DontDestroyOnLoad(singletonGameObject);
                 }
                 return _instance;
             }
         }
-
+        
         protected virtual void Awake()
         {
             if (_instance == null)
@@ -43,7 +42,7 @@ namespace AstroNut.Managers
                 _instance = this as T;
                 DontDestroyOnLoad(gameObject);
             }
-            else
+            else if (_instance != this)
                 Destroy(gameObject);
         }
 
@@ -55,7 +54,9 @@ namespace AstroNut.Managers
         protected virtual void OnDestroy()
         {
             if (_instance == this)
+            {
                 _instance = null;
+            }
         }
     }
 }
