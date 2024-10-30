@@ -48,7 +48,7 @@ namespace AstroNut.Characters.Player
         private void Rotate()
         {
             // Continuously apply rotation based on the latest input
-            if (_rotationInput == 0f || !_canThrust) return;  // return if no input or can't thrust
+            if (_rotationInput == 0f) return;  
             
             // Heh heh, spin player :)
             float rotationForce = jetpack.jetpack.rotationSpeed * jetpack.jetpack.rotationFactor;
@@ -59,7 +59,7 @@ namespace AstroNut.Characters.Player
         private void Thrust(Rigidbody2D body)
         {
             // Continuously apply force to the player
-            if (_thrustInput == 0f) return;
+            if (_thrustInput == 0f || !_canThrust) return;
             
             // Calculate the force to apply based on thrust factor and current thrust value
             float force = jetpack.jetpack.thrustFactor * jetpack.jetpack.thrustLevel;
@@ -81,12 +81,14 @@ namespace AstroNut.Characters.Player
             if (subscribe)
             {
                 InputManager.Instance.RotateEvent += HandleRotation;
-                InputManager.Instance.ThrustEvent += HandleThrust;
+                InputManager.Instance.ThrustEventStart += HandleThrust;
+                InputManager.Instance.ThrustEventStop += HandleThrustStop;
             }
             else
             {
                 InputManager.Instance.RotateEvent -= HandleRotation;
-                InputManager.Instance.ThrustEvent -= HandleThrust;
+                InputManager.Instance.ThrustEventStart -= HandleThrust;
+                InputManager.Instance.ThrustEventStop -= HandleThrustStop;
             }
         }
 
@@ -100,6 +102,11 @@ namespace AstroNut.Characters.Player
         {
             // Update the current thrust value
             _thrustInput = value;
+        }
+
+        private void HandleThrustStop()
+        {
+            _thrustInput = 0f;
         }
 
         #endregion

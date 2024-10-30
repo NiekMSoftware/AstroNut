@@ -1,6 +1,8 @@
+using System.Collections;
 using UnityEngine;
 
 using AstroNut.Characters.Player;
+using UnityEngine.Profiling;
 
 namespace AstroNut.Managers
 {
@@ -10,8 +12,9 @@ namespace AstroNut.Managers
 
         // Reference to the player controller
         private PlayerController playerController;
-
-        private float _thrustInput;
+        private Coroutine fuelDepletionCoroutine;
+        
+        private float _currentThrustInput;
         
         private void Awake()
         {
@@ -20,43 +23,80 @@ namespace AstroNut.Managers
 
         private void OnEnable()
         {
-            InputManager.Instance.ThrustEvent += HandleThrustEvent;
+            InputManager.Instance.ThrustEventStart += HandleThrustEventStart;
+            InputManager.Instance.ThrustEventStop += HandleThrustEventStop;
         }
 
         private void OnDisable()
         {
-            InputManager.Instance.ThrustEvent -= HandleThrustEvent;
+            InputManager.Instance.ThrustEventStart -= HandleThrustEventStart;
+            InputManager.Instance.ThrustEventStop -= HandleThrustEventStop;
         }
 
         private void OnDestroy()
         {
-            InputManager.Instance.ThrustEvent -= HandleThrustEvent;
+            InputManager.Instance.ThrustEventStart -= HandleThrustEventStart;
+            InputManager.Instance.ThrustEventStop -= HandleThrustEventStop;
         }
 
-        private void HandleThrustEvent(float thrustInput)
+        private void HandleThrustEventStart(float thrustInput)
         {
-            _thrustInput = thrustInput;
-            DepleteFuel();
+            _currentThrustInput = thrustInput;
+            fuelDepletionCoroutine ??= StartCoroutine(DepleteFuel(thrustInput));
         }
 
-        private void DepleteFuel()
+        private void HandleThrustEventStop()
         {
-            // Return if jetpack has no fuel left
-            if (data.jetpack.fuelLevel <= 0) return;
+            // Update current thrust input to 0 when stopping
+            _currentThrustInput = 0;
             
-            // Deref the structure to adjust values
-            Jetpack jetpack = data.jetpack;
+            // return if no routine is running
+            if (fuelDepletionCoroutine == null) return;
             
-            // Deplete fuel based on thrust input and consumption rate
-            jetpack.fuelLevel -= _thrustInput * (data.jetpack.fuelConsumptionFactor * Time.deltaTime);
-            data.jetpack = jetpack;
-            
-            // Clamp fuel level to be non-negative
-            if (!(data.jetpack.fuelLevel < 0)) return;
-            
-            // Notify other systems that fuel is depleted
-            jetpack.fuelLevel = 0;
-            Debug.LogWarning("Fuel depleted.");
+            StopCoroutine(fuelDepletionCoroutine);
+            fuelDepletionCoroutine = null;
+        }
+
+        private IEnumerator DepleteFuel(float thrustInput)
+        {
+            while (true)
+            {
+                Profiler.BeginSample("Deplete Fuel");
+                
+                // Break if no input is given.
+                if (_currentThrustInput == 0f) yield break;
+                
+                // Break already if fuel is 0.
+                if (data.jetpack.fuelLevel <= 0)
+                {
+                    OnFuelDepleted();
+                    yield break;
+                }
+
+                // Deref jetpack from data
+                Jetpack jetpack = data.jetpack;
+                
+                // Deplete fuel
+                jetpack.fuelLevel -= jetpack.fuelConsumptionFactor * thrustInput * Time.deltaTime;
+                
+                // Make sure jetpack fuel stays at 0.
+                if (jetpack.fuelLevel <= 0)
+                {
+                    jetpack.fuelLevel = 0;
+                    OnFuelDepleted();
+                }
+                
+                // Assign data
+                data.jetpack = jetpack;
+
+                Profiler.EndSample();
+                yield return null;
+            }
+        }
+
+        private void OnFuelDepleted()
+        {
+            print("Fuel Depleted");
             playerController.DisableThrust();
         }
     }

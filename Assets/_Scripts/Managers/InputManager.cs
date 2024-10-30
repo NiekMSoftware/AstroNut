@@ -26,7 +26,10 @@ namespace AstroNut.Managers
         
         // Define events
         public event Action<float> RotateEvent;
-        public event Action<float> ThrustEvent;
+        
+        // Thrust events
+        public event Action<float> ThrustEventStart;
+        public event Action ThrustEventStop;
         
         private void Awake()
         {
@@ -42,7 +45,7 @@ namespace AstroNut.Managers
             _playerActions.Rotate.canceled += _ => OnRotate(0f);
             
             _playerActions.Thrust.performed += context => OnThrust(context.ReadValue<float>());
-            _playerActions.Thrust.canceled += _ => OnThrust(0f);
+            _playerActions.Thrust.canceled += _ => OnThrustStop();
         }
 
         private void OnEnable()
@@ -64,7 +67,12 @@ namespace AstroNut.Managers
 
         private void OnThrust(float value)
         {
-            ThrustEvent?.Invoke(value);
+            ThrustEventStart?.Invoke(value);
+        }
+
+        private void OnThrustStop()
+        {
+            ThrustEventStop?.Invoke();
         }
 
         #endregion
