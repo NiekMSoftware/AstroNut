@@ -48,7 +48,14 @@ namespace AstroNut.Characters.Player
         private void Rotate()
         {
             // Continuously apply rotation based on the latest input
-            if (_rotationInput == 0f) return;  
+            if (_rotationInput == 0f)
+            {
+                /* TODO: Ask for some feedback on this.
+                // // Rotate the player back to 0 on their respective forward transformation over time
+                // transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.identity,  200 * Time.deltaTime);
+                */
+                return;
+            }  
             
             // Heh heh, spin player :)
             float rotationForce = jetpack.jetpack.rotationSpeed * jetpack.jetpack.rotationFactor;

@@ -6,18 +6,11 @@ namespace AstroNut.Managers
     {
         private static T _instance;
         private static readonly object _lock = new object();
-        private static bool _isShuttingDown;
 
         public static T Instance
         {
             get
             {
-                if (_isShuttingDown)
-                {
-                    Debug.LogWarning($"[Singleton] Instance of '{typeof(T)}' already destroyed. Returning null.");
-                    return null;
-                }
-                
                 lock (_lock)
                 {
                     if (_instance != null) return _instance;
@@ -28,7 +21,7 @@ namespace AstroNut.Managers
                         
                     var singletonGameObject = new GameObject();
                     _instance = singletonGameObject.AddComponent<T>();
-                    singletonGameObject.name = typeof(T).ToString() + " (Singleton)";
+                    singletonGameObject.name = typeof(T) + " (Singleton)";
                     DontDestroyOnLoad(singletonGameObject);
                 }
                 return _instance;
@@ -46,13 +39,9 @@ namespace AstroNut.Managers
                 Destroy(gameObject);
         }
 
-        protected virtual void OnApplicationQuit()
-        {
-            _isShuttingDown = true;
-        }
-
         protected virtual void OnDestroy()
         {
+            // Clean up singleton
             if (_instance == this)
             {
                 _instance = null;
