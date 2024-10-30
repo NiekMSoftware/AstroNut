@@ -1,5 +1,3 @@
-using UnityEngine;
-
 using System;
 
 using AstroNut.InputActions;
@@ -45,9 +43,6 @@ namespace AstroNut.Managers
 
         private void OnDisable()
         {
-            // guard clause for null check
-            if (!Instance) return;
-            
             _playerInputActions.Disable();
         }
 

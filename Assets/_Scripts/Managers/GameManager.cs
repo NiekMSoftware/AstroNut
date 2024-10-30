@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,7 +26,7 @@ namespace AstroNut.Managers
         {
             CurrentGameState = GameState.InGame;
             CurrentPauseState = PauseState.Unpaused;
-            SceneManager.LoadScene("Main Level");
+            StartCoroutine(LoadSceneAsync("Main Level"));
         }
 
         public void QuitApplication()
@@ -41,6 +42,15 @@ namespace AstroNut.Managers
         public void TogglePause()
         {
             CurrentPauseState = CurrentPauseState == PauseState.Paused ? PauseState.Unpaused : PauseState.Paused;
+        }
+
+        private IEnumerator LoadSceneAsync(string sceneName)
+        {
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            while (asyncLoad != null && !asyncLoad.isDone)
+            {
+                yield return null;
+            }
         }
     }
 }
