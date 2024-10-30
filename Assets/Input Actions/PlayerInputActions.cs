@@ -34,13 +34,13 @@ namespace AstroNut.InputActions
                     ""type"": ""Value"",
                     ""id"": ""3c16409b-9aca-4544-b625-4bd5dbdea373"",
                     ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
+                    ""processors"": ""Invert"",
                     ""interactions"": """",
                     ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Thrust"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""68afc22a-3e34-48e9-ba02-9e25279b03f8"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -155,6 +155,17 @@ namespace AstroNut.InputActions
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
+                    ""action"": ""Thrust"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2d3968bf-6c04-4d7b-ad79-12e2715d5245"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Thrust"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

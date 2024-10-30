@@ -40,6 +40,9 @@ namespace AstroNut.Managers
             // Register event handlers
             _playerActions.Rotate.performed += context => OnRotate(context.ReadValue<float>());
             _playerActions.Rotate.canceled += _ => OnRotate(0f);
+            
+            _playerActions.Thrust.performed += context => OnThrust(context.ReadValue<float>());
+            _playerActions.Thrust.canceled += _ => OnThrust(0f);
         }
 
         private void OnEnable()
@@ -57,6 +60,11 @@ namespace AstroNut.Managers
         private void OnRotate(float value)
         {
             RotateEvent?.Invoke(value);
+        }
+
+        private void OnThrust(float value)
+        {
+            ThrustEvent?.Invoke(value);
         }
 
         #endregion
