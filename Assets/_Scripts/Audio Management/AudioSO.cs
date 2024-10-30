@@ -1,8 +1,7 @@
-using AstroNut.Managers;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace AstroNut.Audio
+namespace AstroNut.Audio_Management
 {
     [CreateAssetMenu(fileName = "AudioSO", menuName = "Scriptable Objects/Audio")]
     public class AudioSO : ScriptableObject

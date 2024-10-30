@@ -2,7 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace AstroNut.Managers
+using AstroNut.Core;
+
+namespace AstroNut.Game_Management
 {
     public class GameManager : Singleton<GameManager>
     {

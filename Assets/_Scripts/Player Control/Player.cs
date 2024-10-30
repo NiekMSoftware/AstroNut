@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace AstroNut.Characters.Player
+namespace AstroNut.Player_Control
 {
     /// <summary>
     /// Base class of the player where all the components are being kept.

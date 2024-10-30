@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace AstroNut.Characters.Player
+namespace AstroNut.Player_Control
 {
     [CreateAssetMenu(fileName = "JetpackSO", menuName = "Scriptable Objects/Jetpacks")]
     public class JetpackSO : ScriptableObject

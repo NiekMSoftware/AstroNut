@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace AstroNut.Characters.Player
+namespace AstroNut.Player_Control
 {
     [System.Serializable]
     public struct Jetpack

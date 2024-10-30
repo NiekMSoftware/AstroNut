@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace AstroNut.Managers
+using AstroNut.Core;
+using AstroNut.Game_Management;
+
+namespace AstroNut.UI_Management
 {
     #region UI Structures
 

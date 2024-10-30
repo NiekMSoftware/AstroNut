@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace AstroNut.Managers
+namespace AstroNut.Core
 {
     public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {

@@ -1,8 +1,8 @@
 using UnityEngine;
 
-using AstroNut.Managers;
+using AstroNut.Input_Handling;
 
-namespace AstroNut.Characters.Player
+namespace AstroNut.Player_Control
 {
     public class PlayerController : MonoBehaviour
     {
