@@ -3,9 +3,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-
-using AstroNut.Core;
-using AstroNut.Game_Management;
+using AstroNut.GameManagement;
 
 namespace AstroNut.UI_Management
 {

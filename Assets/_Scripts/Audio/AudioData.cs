@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace AstroNut.Audio_Management
+namespace AstroNut.Audio
 {
     [System.Serializable]
     public struct AudioData

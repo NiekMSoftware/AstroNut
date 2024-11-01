@@ -1,8 +1,8 @@
 using System;
 
-using AstroNut.Core;
+using AstroNut.GameManagement;
 
-namespace AstroNut.Input_Handling
+namespace AstroNut.Input
 {
     public class InputManager : Singleton<InputManager>
     {

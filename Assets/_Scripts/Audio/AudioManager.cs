@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-
-using AstroNut.Core;
-
+using AstroNut.GameManagement;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace AstroNut.Audio_Management
+namespace AstroNut.Audio
 {
     public enum SoundName
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-using AstroNut.Input_Handling;
+using AstroNut.Input;
 
 namespace AstroNut.Player_Control
 {

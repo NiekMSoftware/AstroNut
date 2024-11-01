@@ -1,7 +1,6 @@
-using AstroNut.Input_Handling;
+using AstroNut.Input;
 
 using System.Collections;
-
 using UnityEngine;
 using UnityEngine.Profiling;
 
