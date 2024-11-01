@@ -10,6 +10,7 @@ namespace AstroNut.Player_Control
         
         // Needed components
         private Rigidbody2D _rigidbody;
+        private RigidbodyConstraints2D _originalConstraints;
         
         // Input values
         private float _rotationInput;
@@ -25,6 +26,7 @@ namespace AstroNut.Player_Control
 
         private void OnEnable()
         {
+            _originalConstraints = _rigidbody.constraints;
             SubscribeToInputEvents(true);
         }
         
@@ -32,6 +34,8 @@ namespace AstroNut.Player_Control
 
         public void OnInputRotated()
         {
+            // Disable rigidbody rotation
+            _rigidbody.constraints = _originalConstraints;
             Rotate();
         }
 
@@ -49,6 +53,9 @@ namespace AstroNut.Player_Control
                 // // Rotate the player back to 0 on their respective forward transformation over time
                 // transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.identity,  200 * Time.deltaTime);
                 */
+                
+                // Enable rotation again
+                _rigidbody.constraints = RigidbodyConstraints2D.None;
                 return;
             }  
             
