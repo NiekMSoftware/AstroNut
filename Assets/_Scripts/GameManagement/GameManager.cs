@@ -1,4 +1,5 @@
 using System.Collections;
+using AstroNut.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -46,11 +47,17 @@ namespace AstroNut.GameManagement
 
         private static IEnumerator LoadSceneAsync(string sceneName)
         {
+            UIManager.Instance.ShowLoadingScreen();
+            
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
             while (asyncLoad is { isDone: false })
             {
+                UIManager.Instance.UpdateLoadingProgress(asyncLoad.progress);
                 yield return null;
             }
+            
+            UIManager.Instance.UpdateLoadingProgress(1f);
+            UIManager.Instance.HideLoadingScreen();
         }
     }
 }

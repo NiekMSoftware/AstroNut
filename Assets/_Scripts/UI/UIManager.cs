@@ -1,11 +1,11 @@
-﻿using TMPro;
-
+﻿using System.Collections;
+using AstroNut.GameManagement;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-using AstroNut.GameManagement;
 
-namespace AstroNut.UI_Management
+namespace AstroNut.UI
 {
     #region UI Structures
 
@@ -40,6 +40,18 @@ namespace AstroNut.UI_Management
         [Tooltip("The UISlider container.")] public UISlider[] sliders;
     }
 
+    [System.Serializable]
+    public struct LoadingScreen
+    {
+        public GameObject transition;
+        public GameObject panel;
+        public TMP_Text loadingText;
+
+        [Space] 
+        public Animator animator;
+        public UISlider slider;
+    }
+
     #endregion
     
     public class UIManager : Singleton<UIManager>
@@ -48,10 +60,15 @@ namespace AstroNut.UI_Management
         [SerializeField] private UIPanel mainMenuPanel;
         [SerializeField] private UILabel gameVersion;
 
+        [field: Header("Loading Screen")]
+        [field: SerializeField] public LoadingScreen loadingScreen { get; private set; }
+
         private void Start()
         {
             SetupMainMenu();
         }
+        
+        #region Main Menu Button Setup
         
         private void SetupMainMenu()
         {
@@ -86,8 +103,6 @@ namespace AstroNut.UI_Management
                 }
             }
         }
-
-        #region Main Menu Button Setup
         
         private void OnPlayButtonClicked()
         {
@@ -105,6 +120,29 @@ namespace AstroNut.UI_Management
             GameManager.Instance.QuitApplication();
         }
         
+        #endregion
+
+        #region LoadingScreen
+        
+        public void ShowLoadingScreen()
+        {
+            loadingScreen.panel.SetActive(true);
+        }
+
+        public void HideLoadingScreen()
+        {
+            loadingScreen.panel.SetActive(false);
+            loadingScreen.transition.SetActive(false);
+        }
+
+        public void UpdateLoadingProgress(float progress, string message = "")
+        {
+            loadingScreen.slider.slider.value = progress;
+            int progressPercentage = Mathf.RoundToInt(progress * 100);
+            loadingScreen.loadingText.text = string.IsNullOrEmpty(message) ? "Loading..." : message;
+            loadingScreen.slider.text.text = $"{progressPercentage.ToString()}%";
+        }
+
         #endregion
     }
 }
